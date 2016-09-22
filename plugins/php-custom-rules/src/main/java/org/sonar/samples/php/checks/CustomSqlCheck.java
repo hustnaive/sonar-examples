@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
 import org.sonar.plugins.php.api.tree.Tree;
 import org.sonar.plugins.php.api.tree.expression.LiteralTree;
 import org.sonar.plugins.php.api.visitors.PHPVisitorCheck;
@@ -34,12 +35,24 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 @SqaleConstantRemediation("5min")
 public class CustomSqlCheck extends PHPVisitorCheck {
     
-    private static final Pattern CUSTOM_SQL_RULE = Pattern.compile("select \\*", Pattern.CASE_INSENSITIVE);
+    private Pattern pattern;
+    
+    public static final String DEFAULT_CUSTOM_SQL_RULE = "select \\*";
+    
+    @RuleProperty(
+    key = "CustomSqlRule",
+    defaultValue = DEFAULT_CUSTOM_SQL_RULE)
+    String custom_sql_rule = DEFAULT_CUSTOM_SQL_RULE;
     
     @Override
+    public void init() {
+      pattern = Pattern.compile(custom_sql_rule, Pattern.CASE_INSENSITIVE);
+    }
+  
+    @Override
     public void visitLiteral(LiteralTree literal) {
-      if (literal.is(Tree.Kind.REGULAR_STRING_LITERAL) && CUSTOM_SQL_RULE.matcher(literal.token().text()).find()) {
-          context().newIssue(this, "use the exact field name instead of *").tree(literal);
+      if (literal.is(Tree.Kind.REGULAR_STRING_LITERAL) && pattern.matcher(literal.token().text()).find()) {
+          context().newIssue(this, "The Sql must fit with custom rules ["+custom_sql_rule+"]").tree(literal);
       }
       super.visitLiteral(literal);
     }
