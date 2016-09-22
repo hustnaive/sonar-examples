@@ -9,6 +9,7 @@ package org.sonar.samples.php;
 import com.google.common.collect.ImmutableList;
 
 import org.sonar.plugins.php.api.visitors.PHPCustomRulesDefinition;
+import org.sonar.samples.php.checks.CustomSqlCheck;
 import org.sonar.samples.php.checks.ForbiddenFunctionUseCheck;
 
 /**
@@ -38,6 +39,6 @@ public class PHPRulesDefinition extends PHPCustomRulesDefinition {
    */
   @Override
   public ImmutableList<Class> checkClasses() {
-    return ImmutableList.<Class>of(ForbiddenFunctionUseCheck.class);
+    return ImmutableList.<Class>of(ForbiddenFunctionUseCheck.class,CustomSqlCheck.class);
   }
 }

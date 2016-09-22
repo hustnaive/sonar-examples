@@ -40,7 +40,7 @@ import java.util.Set;
 @SqaleConstantRemediation("5min")
 public class ForbiddenFunctionUseCheck extends PHPVisitorCheck {
 
-  private static final Set<String> FORBIDDEN_FUNCTIONS = ImmutableSet.of("foo", "bar");
+  private static final Set<String> FORBIDDEN_FUNCTIONS = ImmutableSet.of("foo", "bar", "eval");
 
   /**
    * Overriding method visiting the call expression to create an issue
